@@ -21,13 +21,14 @@ def move(x,y,z):
     kit.servo[2].angle = S3
     return 0
 
-leg = Leg("Leg1", COXA=85, FEMUR=200, TIBIA=260)
+leg = Leg("Leg1", COXA=84, FEMUR=293, TIBIA=248)
 
 kit = ServoKit(channels=16)
-delay = 0.001
+delay = 0.05
 
 min_pulse = 500  # Minimum pulse width
 max_pulse = 2500  # Maximum pulse width
+z_offset = 100
 
 for i in range(4):
     kit.servo[i].set_pulse_width_range(min_pulse, max_pulse)
@@ -35,26 +36,26 @@ for i in range(4):
 
 try:
     while True:
-        for z in range(100,300,1):
-            angles = leg.inverseKinematics(target=[100,300,z])
+        for z in range(100,300,20):
+            angles = leg.inverseKinematics(target=[300,100,z-z_offset])
             kit.servo[1].angle = 180-angles[0]
             kit.servo[0].angle = 180-angles[1]
             kit.servo[2].angle = 180-angles[2]
             time.sleep(delay)
-        for y in range(100,300,1):
-            angles = leg.inverseKinematics(target=[100,400-y,300])
+        for y in range(100,300,20):
+            angles = leg.inverseKinematics(target=[400-y,100,300-z_offset])
             kit.servo[1].angle = 180-angles[0]
             kit.servo[0].angle = 180-angles[1]
             kit.servo[2].angle = 180-angles[2]
             time.sleep(delay)
-        for z in range(100,300,1):
-            angles = leg.inverseKinematics(target=[100, 100, 400-z])
+        for z in range(100,300,20):
+            angles = leg.inverseKinematics(target=[100, 100, 400-z-z_offset])
             kit.servo[1].angle = 180-angles[0]
             kit.servo[0].angle = 180-angles[1]
             kit.servo[2].angle = 180-angles[2]
             time.sleep(delay)
-        for y in range(100,300,1):
-            angles = leg.inverseKinematics(target=[100,y,100])
+        for y in range(100,300,20):
+            angles = leg.inverseKinematics(target=[y,100,100-z_offset])
             kit.servo[1].angle = 180-angles[0]
             kit.servo[0].angle = 180-angles[1]
             kit.servo[2].angle = 180-angles[2]
