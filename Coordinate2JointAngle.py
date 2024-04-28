@@ -36,14 +36,14 @@ c = np.cos
 s = np.sin
 
 # Forward kinematics of arm (precalculated by hand for our specific 3-DOF robotic arm) 
-#        gamma : angle of revolute (elbow)
 #        theta : angle of revolute (shoulder)   
+#        gamma : angle of revolute (elbow)
 #        phi : angle of end effector (wrist)
 #        l[0] : length of end effector
 #        l[1] : length of forearm (elbow to wrist joint)
 #        l[2] : length of arm (shoulder to elbow joint)
 def func(x, l, p): 
-    gamma, theta, phi = x 
+    theta, gamma, phi = x 
     return np.array([
         l[0]*(c(gamma)*c(theta)*c(phi) - s(gamma)*c(theta)*s(phi)) + l[1]*c(gamma)*c(theta) + l[2]*c(theta) - p[0],
         l[0]*(c(gamma)*s(phi) + s(gamma)*c(phi)) + l[1]*s(gamma) - p[1],
@@ -147,3 +147,19 @@ def Coordinate2JointAngle(initialAngluarposition, linkLengths, targetCartesionPo
         return position, iterations_normalized[:len(iterations_normalized) - 1]
     else:
         return position, None
+
+
+
+#x = np.array([np.pi/4,np.pi/4,np.pi/4], dtype=float) # Specify initial positon of arm in radians. Usually the startup position
+x = np.array([np.pi/4,np.pi/4,np.pi/4], dtype=float) 
+l = np.array([1, 1, 1])                              # Specify link lengths 
+p = np.array([2,1,0])                                # Target position in cartesion coordinates
+
+[finalPosition, iterations] = Coordinate2JointAngle(x, l, p, False) # True --> Newtons Method iterations are returned 
+
+print("\n{ theta, gamma, phi } =",format(finalPosition), "\n")
+
+if iterations is not None:
+    for position in iterations:
+        print("\n",position)
+

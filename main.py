@@ -49,8 +49,8 @@ while True:
         print(positionAngles[1])
 
         # an offset is added as servos work between 0 to 180 degrees
-        kit.servo[0].angle = positionAngles[1] + 90
-        kit.servo[1].angle = positionAngles[0] + 90
+        kit.servo[0].angle = positionAngles[0] + 90
+        kit.servo[1].angle = positionAngles[1] + 90
         kit.servo[2].angle = positionAngles[2] + 90
 
         # delay to wait before next movement of leg 

@@ -22,13 +22,13 @@ class Leg:
 
         position, iteration = Coordinate2JointAngle.Coordinate2JointAngle(initialAngluarposition, linkLengths, targetCartesionPosition, returnIterations)
 
-        self.theta2 = position[0]; self.theta1 = position[1]; self.theta3 = position[2]
+        self.theta1 = position[0]; self.theta2 = position[1]; self.theta3 = position[2]
 
         return iteration
 
 
     def getAngles(self):
 
-        return np.array([self.theta2, self.theta1, self.theta3]) # This order is weird, ask me why! (Hassan)
+        return np.array([self.theta1, self.theta2, self.theta3]) 
     
     
