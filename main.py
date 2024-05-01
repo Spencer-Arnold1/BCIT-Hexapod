@@ -11,11 +11,11 @@ leg = Leg("Leg1", COXA=1, FEMUR=1, TIBIA=1)
 
 while True:
 
-    leg.setPosition([1.3077,1.7071,1.0973])
+    leg.setPosition([0,  0, 3])
 
     time.sleep(3)
 
-    leg.setPosition([2.2807, 1.5263, 0])
+    leg.setPosition([0, 0, -3])
 
     time.sleep(3)
 
