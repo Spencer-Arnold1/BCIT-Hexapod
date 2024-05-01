@@ -108,6 +108,7 @@ def Coordinate2JointAngle(initialAngluarposition, linkLengths, targetCartesionPo
     else:
         print("\nf(x) =", f, "Solution does not converge to 0. Target Position may be impossible")
 
+    # conversion to degrees
     position = position * 180/np.pi
 
     # normalizing angle 
@@ -148,18 +149,4 @@ def Coordinate2JointAngle(initialAngluarposition, linkLengths, targetCartesionPo
     else:
         return position, None
 
-
-
-#x = np.array([np.pi/4,np.pi/4,np.pi/4], dtype=float) # Specify initial positon of arm in radians. Usually the startup position
-x = np.array([np.pi/4,np.pi/4,np.pi/4], dtype=float) 
-l = np.array([1, 1, 1])                              # Specify link lengths 
-p = np.array([2,1,0])                                # Target position in cartesion coordinates
-
-[finalPosition, iterations] = Coordinate2JointAngle(x, l, p, False) # True --> Newtons Method iterations are returned 
-
-print("\n{ theta, gamma, phi } =",format(finalPosition), "\n")
-
-if iterations is not None:
-    for position in iterations:
-        print("\n",position)
 
