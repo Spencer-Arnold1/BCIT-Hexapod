@@ -6,7 +6,7 @@
 #        angles required to position the end effector (wrist) of the robotic arm at a given Cartesian position 
 #
 # NAMING CONVENTIONS NOTE:
-#               * Y-coordinate refers to height, X-coordinate is forward discplacement of arm, Z-coordinate is lateral displacement
+#               * Y-coordinate refers to height, X-coordinate is forward discplacement of arm, Z-coordinate is lateral displacement (Right handed co-ordinate convention is adopted)
 #               * theta angle is between z and x axis (Transverse plane), gamma is angle between first and second link, phi is angle between second and third link, 
 #
 # FUTURE REFACTOR NOTE: Coordinate2JointAngle uses Radians for its initial position, but outputs degrees. Changes both to degrees --- FIXED
@@ -46,11 +46,11 @@ def func(x, l, p):
     theta, gamma, phi = x 
     return np.array([
         l[0]*(c(gamma)*c(theta)*c(phi) - s(gamma)*c(theta)*s(phi)) + l[1]*c(gamma)*c(theta) + l[2]*c(theta) - p[0],
-        l[0]*(c(gamma)*s(phi) + s(gamma)*c(phi)) + l[1]*s(gamma) - p[1],
-        -l[0]*(s(gamma)*s(theta)*s(phi) - c(gamma)*s(theta)*c(phi)) + l[1]*c(gamma)*s(theta) + l[2]*s(theta) - p[2]
+        -l[0]*(s(gamma)*s(theta)*s(phi) - c(gamma)*s(theta)*c(phi)) + l[1]*c(gamma)*s(theta) + l[2]*s(theta) - p[1],
+        l[0]*(c(gamma)*s(phi) + s(gamma)*c(phi)) + l[1]*s(gamma) - p[2],
     ])
 
-def InverseKinematicsNewtonsMethod(func, J, initialAngluarposition, linkLengths, targetPosition, maxIterations=100, tol=1e-4):
+def InverseKinematicsNewtonsMethod(func, J, initialAngluarposition, linkLengths, targetPosition, maxIterations=100, tol=1e-6):
     position = initialAngluarposition
 
     iterations = [position]
@@ -148,5 +148,4 @@ def Coordinate2JointAngle(initialAngluarposition, linkLengths, targetCartesionPo
         return position, iterations_normalized[:len(iterations_normalized) - 1]
     else:
         return position, None
-
 
