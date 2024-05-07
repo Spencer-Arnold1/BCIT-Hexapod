@@ -9,7 +9,7 @@
 #               * Y-coordinate refers to height, X-coordinate is forward discplacement of arm, Z-coordinate is lateral displacement
 #               * theta angle is between z and x axis (Transverse plane), gamma is angle between first and second link, phi is angle between second and third link, 
 #
-# FUTURE REFACTOR NOTE: Coordinate2JointAngle uses Radians for its initial position, but outputs degrees. Changes both to degrees.
+# FUTURE REFACTOR NOTE: Coordinate2JointAngle uses Radians for its initial position, but outputs degrees. Changes both to degrees --- FIXED
 
 
 ''' Example implementation
@@ -50,7 +50,7 @@ def func(x, l, p):
         -l[0]*(s(gamma)*s(theta)*s(phi) - c(gamma)*s(theta)*c(phi)) + l[1]*c(gamma)*s(theta) + l[2]*s(theta) - p[2]
     ])
 
-def InverseKinematicsNewtonsMethod(func, J, initialAngluarposition, linkLengths, targetPosition, maxIterations=1000, tol=1e-11):
+def InverseKinematicsNewtonsMethod(func, J, initialAngluarposition, linkLengths, targetPosition, maxIterations=100, tol=1e-4):
     position = initialAngluarposition
 
     iterations = [position]
@@ -88,7 +88,7 @@ def InverseKinematicsNewtonsMethod(func, J, initialAngluarposition, linkLengths,
 #   iterations: outputs all iterations This can allow for the robotic arm to move smoothly to its positon
 def Coordinate2JointAngle(initialAngluarposition, linkLengths, targetCartesionPosition, returnIterations):
 
-    x = initialAngluarposition
+    x = initialAngluarposition * np.pi/180 # argument is in degrees, must be converted to radians. 
     l = linkLengths
     p = targetCartesionPosition
 
@@ -101,10 +101,10 @@ def Coordinate2JointAngle(initialAngluarposition, linkLengths, targetCartesionPo
     # test if f(x) = 0
     f = func(position, l, p)
 
-    tolerance = 1e-9
+    tolerance = 1e-5
 
     if all(abs(value) < tolerance for value in f):
-        print("\n") # \print("\nf(x) =", f, "Solution converges")
+        print("") # \print("\nf(x) =", f, "Solution converges")
     else:
         print("\nf(x) =", f, "Solution does not converge to 0. Target Position may be impossible")
 
