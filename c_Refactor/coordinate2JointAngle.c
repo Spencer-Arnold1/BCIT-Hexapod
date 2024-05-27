@@ -19,6 +19,10 @@ BCIT - HEXAPOD ROBOTICS CLUB
 #include <stdlib.h>
 #include <math.h>
 
+#ifndef M_PI
+    #define M_PI 3.14159265358979323846 // not always defined
+#endif
+
 #define MAXITERATIONS 100
 #define TOLERANCE 1e-6
 
@@ -37,9 +41,7 @@ double** func(double x[3], double l[3], double p[3]) {
     double** result = malloc(3 * sizeof(double*));                       // allocating memory for rows
 
     for (i = 0; i < 3; i++) {
-
         result[i] = malloc(1 * sizeof(double));                          // allocating memory for columns
-
     }
 
     // pre-calculated function using MATLAB
@@ -80,7 +82,6 @@ double** InverseKinematicSolution(double initialAngularPosition[3], double lengt
         for (j = 0; j < 3; j++)                                                     // initial guess copied into new matrix
             in_x[j] = initial_x[j][0];
 
-
         // Newton's Method iteration x_n+1 = xn - (J^-1)*f(xn)
 
         f_u = (*f)(in_x, lengths, targetPosition);                                  // f(xn)
@@ -105,7 +106,6 @@ double** InverseKinematicSolution(double initialAngularPosition[3], double lengt
         if (maxChange < TOLERANCE)                                                  // breaks here when difference is negligeable
             break;
 
-
         for (i = 0; i < 3; i++) {                                                   // freeing memory
             free(f_u[i]);
             free(temp[i]);
@@ -117,6 +117,7 @@ double** InverseKinematicSolution(double initialAngularPosition[3], double lengt
         for (i = 0; i < 3; i++) {
             free(JacobianResult[i]);
         }
+
         free(JacobianResult);
     }
 
@@ -146,7 +147,6 @@ double* coordinate2JointAngle(double initialAngularPosition[3], double linkLengt
     for (i = 0; i < 3; i++) {
 
         jointAngles[i] = solution[i][0] * 180 / M_PI;                                                                   // Convert to degrees
-
 
         double angle = fmod(jointAngles[i], 360.0);                                                                     // Normalize the angle
 

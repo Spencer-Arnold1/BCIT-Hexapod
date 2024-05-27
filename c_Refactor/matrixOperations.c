@@ -26,11 +26,8 @@ double** matrixAdd(double** mat1, double** mat2, int rowNum, int ColumnNum) {
 	int i, j;                                            // iterators
 
 	for (i = 0; i < rowNum; i++) {
-
 		result[i] = malloc(ColumnNum * sizeof(double)); // allocating memory for columns
-
 		for (j = 0; j < ColumnNum; j++) {
-
 			result[i][j] = mat1[i][j] + mat2[i][j];     // corresponding elements are added
 		}
 	}
@@ -53,11 +50,8 @@ double** matrixSubtract(double** mat1, double** mat2, int rowNum, int ColumnNum)
     int i, j;                                             // iterators
 
 	for (i = 0; i < rowNum; i++) {
-
 		result[i] = malloc(ColumnNum * sizeof(double));   // allocating memory for columns
-
 		for (j = 0; j < ColumnNum; j++) {
-
 			result[i][j] = mat1[i][j] - mat2[i][j];       // corresponding elements are subtracted
 		}
 	}
@@ -85,21 +79,14 @@ double** matrixMultiply(double** mat1, double** mat2, int mat1rowNum,
 	double** result = malloc(mat1rowNum * sizeof(double*)); // allocating memory for rows
 
 	for (i = 0; i < mat1rowNum; i++) {
-
 		result[i] = malloc(mat2ColumnNum * sizeof(double)); // allocating memory for columns
-
 	}
 
 	for (i = 0; i < mat1rowNum; i++) {                     // multiplication operation begins
-
 		for (j = 0; j < mat2ColumnNum; j++) {
-
 			result[i][j] = 0;
-
 			for (k = 0; k < mat1ColumnNum; k++) {
-
 				result[i][j] += mat1[i][k] * mat2[k][j];   // dot products of corresponding row and column
-
 			}
 		}
 	}
@@ -121,44 +108,29 @@ void matrixInvert(double** mat, int matdim) {
 	double** identity = malloc(matdim * sizeof(double*));   // Create identity matrix for matrix augmentation
 
 	for (i = 0; i < matdim; i++) {
-
 		identity[i] = malloc(matdim * sizeof(double));
-
 		for (j = 0; j < matdim; j++) {
-
 			if (i == j)
-
 				identity[i][j] = 1.0;
-
 			else
-
 				identity[i][j] = 0.0;
-
 		}
 	}
 
 
 	for (k = 0; k < matdim; k++) {                          // Gaussian elimination starts here
-
-
 		if (mat[k][k] == 0) {                               // finding initial pivot value by swapping rows if pivot is zero
-
 			for (i = k + 1; i < matdim; i++) {
-
 				if (mat[i][k] != 0) {
-
 					swapRows(mat, k, i, matdim);
 					swapRows(identity, k, i, matdim);
-
 					break;
 				}
 			}
 		}
 
 		double pivot = mat[k][k];
-
 		if (pivot == 0)                                     // Matrix is singular and cannot be inverted
-
 			return; // exits function
 
 		/*
@@ -168,22 +140,15 @@ void matrixInvert(double** mat, int matdim) {
 
 
 		for (j = 0; j < matdim; j++) {                      // normalize pivot row
-
 			mat[k][j] /= pivot;
 			identity[k][j] /= pivot;
-
 		}
 
 		for (i = 0; i < matdim; i++) {                          // Performing row reduction operations
-
 			if (i != k) {                                       // skip the pivot row
-
 				double factor = mat[i][k];                      // factor to eliminate the element below/above the pivot
-
 				for (j = 0; j < matdim; j++) {                  // Loop through all columns
-
 					mat[i][j] -= factor * mat[k][j];            // Eliminate element in the matrix
-
 					identity[i][j] -= factor * identity[k][j];  // Apply the same operation to the identity matrix
 
 				}
@@ -205,16 +170,12 @@ void matrixInvert(double** mat, int matdim) {
 	}
 
 	for (i = 0; i < matdim; i++) {                               // copying identity (inverted result) to input matrix
-
 		for (j = 0; j < matdim; j++) {
-
 			mat[i][j] = identity[i][j];
-
 		}
 	}
 
 	for (i = 0; i < matdim; i++) {                               // freeing memory
-
 		free(identity[i]);
 	}
 
@@ -238,9 +199,7 @@ double** Jacobian(double x[3], double length[3], double point[3], double** (*f)(
 	double** result = malloc(3 * sizeof(double*));              // allocating memory for rows
 
 	for (i = 0; i < 3; i++) {
-
 		result[i] = malloc(3 * sizeof(double));                 // allocating memory for columns
-
 	}
 
 	double thetaplus_h[3] = { x[0] + h, x[1], x[2] };           // H = [ {h, 0, 0} , {0, h, 0}, {0, 0, h} ]
@@ -288,8 +247,6 @@ void swapRows(double** mat, int row1, int row2, int matdim) {
 	mat[row2] = temp;
 
 }
-
-
 
 
 
