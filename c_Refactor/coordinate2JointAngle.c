@@ -1,15 +1,15 @@
-/* 
+/*
 BCIT - HEXAPOD ROBOTICS CLUB
 ----------------------------------------------------------
 # Author(s) : Hassan Islam
 # Date : 2024 - 05 - 23
-# DESC : This following implements Newton's Method to numerically solve for the inverse kinematics of a 3-DOF 
+# DESC : This following implements Newton's Method to numerically solve for the inverse kinematics of a 3-DOF
 #        robotic arm that otherwise has no analytical solution.This is done in order to find the joint
 #        angles required to position the end effector(wrist) of the robotic arm at a given Cartesian position
 #
 # NAMING CONVENTIONS NOTE :
 #               * Z-coordinate refers to height, X-coordinate is forward discplacement of arm, Y-coordinate is lateral displacement (Right handed co-ordinate convention is adopted)
-#               * theta angle is between z and x axis (Transverse plane), gamma is angle between first and second link, phi is angle between second and third link, 
+#               * theta angle is between z and x axis (Transverse plane), gamma is angle between first and second link, phi is angle between second and third link,
 #
 */
 
@@ -23,8 +23,31 @@ BCIT - HEXAPOD ROBOTICS CLUB
     #define M_PI 3.14159265358979323846 // not always defined
 #endif
 
-#define MAXITERATIONS 100
-#define TOLERANCE 1e-6
+#define MAXITERATIONS 1000
+//todo: change tolerance to increase speed (was 1e-6)
+#define TOLERANCE 1e-3
+
+
+
+double fast_sin(double x) {
+    // Normalize angle to range [-pi, pi]
+    while (x < -M_PI) x += 2 * M_PI;
+    while (x > M_PI) x -= 2 * M_PI;
+
+    // Use Chebyshev polynomial approximation
+    double x2 = x * x;
+    return x * (1 - x2 / 6 + x2 * x2 / 120);
+}
+
+double fast_cos(double x) {
+    // Normalize angle to range [-pi, pi]
+    while (x < -M_PI) x += 2 * M_PI;
+    while (x > M_PI) x -= 2 * M_PI;
+
+    // Use Chebyshev polynomial approximation
+    double x2 = x * x;
+    return 1 - x2 / 2 + x2 * x2 / 24;
+}
 
 
 //***************************************************************************************
@@ -32,7 +55,41 @@ BCIT - HEXAPOD ROBOTICS CLUB
 // Forward Kinematics Solution
 //
 //***************************************************************************************
+
+/*
 double** func(double x[3], double l[3], double p[3]) {
+
+    int i;                                                               // iterator
+
+    double theta = x[0], gamma = x[1], phi = x[2];
+
+    double** result = malloc(3 * sizeof(double*));                       // allocating memory for rows
+
+    for (i = 0; i < 3; i++) {
+        result[i] = malloc(1 * sizeof(double));                          // allocating memory for columns
+    }
+
+    // pre-calculated function using MATLAB
+    result[0][0] = l[0] * (cos(gamma) * cos(theta) * cos(phi) - sin(gamma) * cos(theta) * sin(phi)) + l[1] * cos(gamma) * cos(theta) + l[2] * cos(theta) - p[0];
+    result[1][0] = -l[0] * (sin(gamma) * sin(theta) * sin(phi) - cos(gamma) * sin(theta) * cos(phi)) + l[1] * cos(gamma) * sin(theta) + l[2] * sin(theta) - p[1];
+    result[2][0] = l[0] * (cos(gamma) * sin(phi) + sin(gamma) * cos(phi)) + l[1] * sin(gamma) - p[2];
+
+    // Note: Although F(x) is a vector, it is returned as a 2-D matrix to allow for compatibility between other functions
+
+    return result;
+}
+*/
+
+
+
+//***************************************************************************************
+double** func(double x[3], double l[3], double p[3]) {
+
+    /*
+     *l[0] = Tibia
+     *l[1] = Femur
+     *l[2] = Coxa
+     */
 
     int i;                                                               // iterator
 
@@ -55,13 +112,12 @@ double** func(double x[3], double l[3], double p[3]) {
 }
 
 
-
-
 //***************************************************************************************
 //
 // Inverse Kinematics Solution
 //
 //***************************************************************************************
+
 double** InverseKinematicSolution(double initialAngularPosition[3], double lengths[3], double targetPosition[3],
                                   double** (*f)(double[3], double[3], double[3])) {
 
@@ -73,7 +129,9 @@ double** InverseKinematicSolution(double initialAngularPosition[3], double lengt
     int i, j, iter;                                                                      // iterators
 
     for (i = 0; i < 3; i++) {
+
         initial_x[i] = malloc(1 * sizeof(double));
+
         initial_x[i][0] = initialAngularPosition[i];
     }
 
@@ -84,7 +142,7 @@ double** InverseKinematicSolution(double initialAngularPosition[3], double lengt
 
         // Newton's Method iteration x_n+1 = xn - (J^-1)*f(xn)
 
-        f_u = (*f)(in_x, lengths, targetPosition);                                  // f(xn)
+        f_u  = (*f)(in_x, lengths, targetPosition);                                  // f(xn)
         JacobianResult = Jacobian(in_x, lengths, targetPosition, (*f));             // J
         matrixInvert(JacobianResult, 3);                                            // J^-1
         temp = matrixMultiply(JacobianResult, f_u, 3, 3, 3, 1);                     // (J^-1)*f(xn)
@@ -103,27 +161,29 @@ double** InverseKinematicSolution(double initialAngularPosition[3], double lengt
             initial_x[i][0] = x_iteration[i][0];
         }
 
-        if (maxChange < TOLERANCE)                                                  // breaks here when difference is negligeable
-            break;
-
         for (i = 0; i < 3; i++) {                                                   // freeing memory
             free(f_u[i]);
             free(temp[i]);
             free(x_iteration[i]);
         }
+
         free(f_u);
         free(temp);
         free(x_iteration);
+
         for (i = 0; i < 3; i++) {
             free(JacobianResult[i]);
         }
 
         free(JacobianResult);
+
+        if (maxChange < TOLERANCE)                                                  // breaks here when difference is negligeable
+               break;
+
     }
 
     return initial_x;                                                              // return final iteration
 }
-
 
 
 
@@ -151,9 +211,9 @@ double* coordinate2JointAngle(double initialAngularPosition[3], double linkLengt
         double angle = fmod(jointAngles[i], 360.0);                                                                     // Normalize the angle
 
         if (angle < 0)
-            angle += 360.0;
+            angle += 360.0;                                                                                             // Bring angle into domain on 0 < angle < 360
 
-        if (angle > 180.0)
+        if (angle > 180.0)                                                                                              // Further reduce domain to -180 < angle < 180
             angle -= 360.0;
 
         jointAngles[i] = angle;                                                                                         // store result in vector
@@ -230,7 +290,7 @@ void debug() {
         printf("\n");
     }
 
-    // Garbage collection 
+    // Garbage collection
     for (i = 0; i < 3; i++) {
         free(result[i]);
         free(matrixOne[i]);

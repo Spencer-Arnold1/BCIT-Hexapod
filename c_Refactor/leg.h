@@ -8,23 +8,22 @@ BCIT - HEXAPOD ROBOTICS CLUB
 #
 */
 
-
 #pragma once
 
 #include "coordinate2JointAngle.h"
+#include "pca9685.h"
 #include <stdlib.h>
-
 
 
 //*******************************************************************************
 //
-// 3-joint RRR Robitic Leg CLASS definition
+// 3-joint RRR Robotic Leg CLASS definition
 //
 //*******************************************************************************
 struct leg {
 
    //Public Methods
-   void (*setPosition)(struct leg *self, double cartesianPosition[3]);    //make sure to add int steps
+   void (*calculatePosition)(struct leg *self, double cartesianPosition[3]);    //make sure to add int steps
    void (*resetPosition)(struct leg *self);
    void (*getAngles)(struct leg*self, double angles[3]);
 
@@ -33,11 +32,12 @@ struct leg {
 
    double angularPositon[3];
    double linkLengths[3];
+   uint32_t baseAddress, driverAddress;
 
 };
 
 // constructor
-void legInit(struct leg*self, double coxa, double femur, double tibia);
+void legInit(struct leg*self, double coxa, double femur, double tibia, uint32_t baseAddress, uint32_t driverAddress );
 
 
 // make a destructor

@@ -42,3 +42,5 @@ double** InverseKinematicSolution(double initialAngularPosition[3], double lengt
 //
 // *******************************************************************************
 double* coordinate2JointAngle(double initialAngularPosition[3], double linkLengths[3], double targetCartesianPosition[3]);
+
+

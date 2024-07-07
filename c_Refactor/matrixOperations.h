@@ -47,6 +47,11 @@ void matrixInvert(double** mat, int matdim);
 
 
 
+
+double** matrixTranspose(double** matrix, int rows, int cols);
+
+
+
 //*******************************************************************************
 //
 // ERO--row swap Operator
