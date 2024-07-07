@@ -5,7 +5,7 @@
 
 import Coordinate2JointAngle as c2a
 import numpy as np
-from adafruit_servokit import ServoKit
+#from adafruit_servokit import ServoKit
 import time
 
 class Leg:
@@ -19,13 +19,14 @@ class Leg:
         self.theta3 = 0.1
         
         # private attributes
+        '''
         self.__kit = ServoKit(channels=16) 
         self.__min_pulse = 500  # Minimum pulse width
         self.__max_pulse = 2500  # Maximum pulse width
 
         for i in range(4):
             self.__kit.servo[i].set_pulse_width_range(self.__min_pulse, self.__max_pulse)
-    
+        '''
 
     def setPosition(self, CartesianPosition, steps):
         # Return current angular position of arm -------- DOES NOT ANYMORE 
@@ -93,9 +94,10 @@ class Leg:
         # maybe add a wait here....
         time.sleep(0.3)
 
-        
+        '''
         # an offset is added as servos work between 0 to 180 degrees
         self.__kit.servo[0].angle = -positionAngles[0] + 90
         self.__kit.servo[1].angle = positionAngles[1] + 90
         self.__kit.servo[2].angle = positionAngles[2] + 90
+        '''
         

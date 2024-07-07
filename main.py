@@ -4,16 +4,22 @@
 # DESC : Hexapod Main 
 # NOTE: measurements --> COXA = 8.4, FEMUR = 29.3, TIBIA = 24.8
 
+
+#NOTE I COMMENTED OUT THE SERVO CODE FOR NOW!
+
 from Leg import Leg
 import numpy as np
 import time
 import display as dp
 
-leg = Leg("Leg1", COXA=8.4, FEMUR=29.3, TIBIA=24.8)
+leg = Leg("Leg1", COXA=0, FEMUR=1, TIBIA=1)
 
 leg.resetPosition()
 
+leg.setPosition([0,   1.707,   0.707], 0) # all the way right
 
+
+'''
 time.sleep(3)
 
 leg.setPosition([0.1,   0.1,   62.5], 0) # all the way right
@@ -51,6 +57,10 @@ leg.setPosition([0.1,   0.1,   62.5], 20) # all the way right
 time.sleep(1)
 
 leg.setPosition([8.1897, 38.2545, -8.1897], 20) # (45,45,90)
+
+
+
+'''
 
 '''
 def path(pos1,pos2,num,duration):
