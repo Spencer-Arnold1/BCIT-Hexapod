@@ -23,22 +23,24 @@ BCIT - HEXAPOD ROBOTICS CLUB
 struct leg {
 
    //Public Methods
-   void (*calculatePosition)(struct leg *self, double cartesianPosition[3]);    //make sure to add int steps
+   void (*setPosition)(struct leg *self, double cartesianPosition[3]);    //make sure to add int steps
    void (*resetPosition)(struct leg *self);
    void (*getAngles)(struct leg*self, double angles[3]);
 
-   //Private Methods
-   void (*setServoAngles)(struct leg*self);
+   //Private Methods;
 
-   double angularPositon[3];
+   double angularPosition[3];
    double linkLengths[3];
    uint32_t baseAddress, driverAddress;
 
 };
 
+// call to send positional data to servos
+void updatePositon();
+
+void setAllPosition(double cartesianPosition[3]);
 // constructor
 void legInit(struct leg*self, double coxa, double femur, double tibia, uint32_t baseAddress, uint32_t driverAddress );
-
 
 // make a destructor
 

@@ -74,10 +74,6 @@ void pca9685sendDataFrame(uint8_t slaveAddr, uint8_t controlReg, uint8_t data) {
 void i2cInit(){
 
 
-    // SysCtlClockSet(SYSCTL_SYSDIV_1 | SYSCTL_USE_OSC | SYSCTL_OSC_MAIN |
-    //                SYSCTL_XTAL_16MHZ);
-
-
     // enable I2C0 peripheral
     SysCtlPeripheralEnable(SYSCTL_PERIPH_I2C0);
 
@@ -155,14 +151,14 @@ int systemTransferEquation(double angle) {
 
 // Wrapper function to interface with
 // legBaseAddress: will indicate address of led"N"_ON_loControlReg.
-void servoControl(double angle[3], uint32_t baseAddress, uint32_t driverAddress) {
+void servoControl(double angle, uint32_t baseAddress, uint32_t driverAddress) {
 
     // 0 degree phase shift for every pulse
     uint32_t  led_ON_loControlReg_dur = 0x00;
     uint32_t  led_ON_hiControlReg_dur = 0x00;
 
 
-    // SERVO0 INIT
+    // Servo Initializtion
     uint32_t  led0_ON_loControlReg = baseAddress;
     uint32_t  led0_ON_hiControlReg = baseAddress + 1;
 
@@ -170,60 +166,22 @@ void servoControl(double angle[3], uint32_t baseAddress, uint32_t driverAddress)
     uint32_t  led0_OFF_hiControlReg = baseAddress + 3;
 
 
-    // SERVO1 INIT
-    uint32_t  led1_ON_loControlReg = baseAddress + 4;
-    uint32_t  led1_ON_hiControlReg = baseAddress + 5;
-
-    uint32_t  led1_OFF_loControlReg = baseAddress + 6;
-    uint32_t  led1_OFF_hiControlReg = baseAddress + 7;
-
-
-    // SERVO2 INIT
-    uint32_t  led2_ON_loControlReg = baseAddress + 8;
-    uint32_t  led2_ON_hiControlReg = baseAddress + 9;
-
-    uint32_t  led2_OFF_loControlReg = baseAddress + 10;
-    uint32_t  led2_OFF_hiControlReg = baseAddress + 11;
-
-
-    //////////////////////////////////////////
+    // PWM duration control registers
     uint32_t  led0_OFF_hiControlReg_dur;
     uint32_t  led0_OFF_loControlReg_dur;
 
-    uint32_t  led1_OFF_hiControlReg_dur;
-    uint32_t  led1_OFF_loControlReg_dur;
 
-    uint32_t  led2_OFF_hiControlReg_dur;
-    uint32_t  led2_OFF_loControlReg_dur;
-
+    // Angle value is split into two registers
+    led0_OFF_hiControlReg_dur = (systemTransferEquation(angle) &(0xF00)) >> 8;
+    led0_OFF_loControlReg_dur = systemTransferEquation(angle) &(0x0FF);
 
 
-    ///////////////////////////////////////////
-    led0_OFF_hiControlReg_dur = (systemTransferEquation(angle[0]) &(0xF00)) >> 8;
-    led0_OFF_loControlReg_dur = systemTransferEquation(angle[0]) &(0x0FF);
-
-    led1_OFF_hiControlReg_dur = (systemTransferEquation(angle[1]) &(0xF00)) >> 8;
-    led1_OFF_loControlReg_dur = systemTransferEquation(angle[1]) &(0x0FF);
-
-    led2_OFF_hiControlReg_dur = (systemTransferEquation(angle[2]) &(0xF00)) >> 8;
-    led2_OFF_loControlReg_dur = systemTransferEquation(angle[2]) &(0x0FF);
-
-
-    //////////////////////////////////////////// sending data
+    // sending data
     pca9685sendDataFrame(driverAddress, led0_ON_hiControlReg, led_ON_hiControlReg_dur );
     pca9685sendDataFrame(driverAddress, led0_ON_loControlReg, led_ON_loControlReg_dur );
     pca9685sendDataFrame(driverAddress, led0_OFF_hiControlReg, led0_OFF_hiControlReg_dur );
     pca9685sendDataFrame(driverAddress, led0_OFF_loControlReg, led0_OFF_loControlReg_dur );
 
-    pca9685sendDataFrame(driverAddress, led1_ON_hiControlReg, led_ON_hiControlReg_dur );
-    pca9685sendDataFrame(driverAddress, led1_ON_loControlReg, led_ON_loControlReg_dur );
-    pca9685sendDataFrame(driverAddress, led1_OFF_hiControlReg, led1_OFF_hiControlReg_dur );
-    pca9685sendDataFrame(driverAddress, led1_OFF_loControlReg, led1_OFF_loControlReg_dur );
-
-    pca9685sendDataFrame(driverAddress, led2_ON_hiControlReg, led_ON_hiControlReg_dur );
-    pca9685sendDataFrame(driverAddress, led2_ON_loControlReg, led_ON_loControlReg_dur );
-    pca9685sendDataFrame(driverAddress, led2_OFF_hiControlReg, led2_OFF_hiControlReg_dur );
-    pca9685sendDataFrame(driverAddress, led2_OFF_loControlReg, led2_OFF_loControlReg_dur );
 
 }
 

@@ -18,11 +18,9 @@
 #include "driverlib/sysctl.h"
 
 
-//#define SLAVE_ADDRESS 0x40
-
 
 // Public Functions
-void servoControl(double angle[3], uint32_t baseAddress, uint32_t driverAddress);
+void servoControl(double angle, uint32_t baseAddress, uint32_t driverAddress);
 
 void PCA9685Init(uint32_t addr);
 

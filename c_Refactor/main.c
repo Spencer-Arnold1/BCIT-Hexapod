@@ -59,15 +59,21 @@ debugging includes go here
 double* jointAngles;
 double _result[3];
 
-//*****************************************************************************
-//
-// The error routine that is called if the driver library encounters an error. Include preproccessor before includes
-//
-//*****************************************************************************
 
 void delayMs(uint32_t ui32Ms) {
 
     SysCtlDelay(ui32Ms * (SysCtlClockGet() / 3 / 1000));
+}
+
+void ledBlink(){
+
+    SysCtlDelay(SysCtlClockGet() / 10 );
+
+    GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_2, 0);
+
+    SysCtlDelay(SysCtlClockGet() / 10 );
+
+    GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_2, GPIO_PIN_2);
 }
 
 
@@ -85,7 +91,7 @@ int main(void)
      MAP_FPULazyStackingEnable();
 
      // Set the clocking to run directly from the crystal.
-     // Configure the system clock to 80 MHz.
+     // Configure the system clock to 16 MHz.
      MAP_SysCtlClockSet(SYSCTL_SYSDIV_2_5 | SYSCTL_USE_PLL | SYSCTL_XTAL_16MHZ | SYSCTL_OSC_MAIN);
 
      // Enable the GPIO port that is used for the on-board LED.
@@ -99,15 +105,10 @@ int main(void)
      // Enable the GPIO pins for the LED (PF2).
      MAP_GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, GPIO_PIN_2);
 
-    //
     // Initialize PCA9685 Servo control module
-    //
     PCA9685Init(SLAVE_ADDRESS);
 
-
-    //
-    // Create a leg module
-    //
+    // initializing leg modules
     struct leg leg1;    legInit(&leg1, 0, 1, 1, LEG1, SLAVE_ADDRESS);
     struct leg leg2;    legInit(&leg2, 0, 1, 1, LEG2, SLAVE_ADDRESS);
     struct leg leg3;    legInit(&leg3, 0, 1, 1, LEG3, SLAVE_ADDRESS);
@@ -115,66 +116,34 @@ int main(void)
     struct leg leg5;    legInit(&leg5, 0, 1, 1, LEG5, SLAVE_ADDRESS + 1);
     struct leg leg6;    legInit(&leg6, 0, 1, 1, LEG6, SLAVE_ADDRESS + 1);
 
-
-    /////////////////////////////////////////////////////////////
-    /////////////////////////////////////////////////////////////
-
-
-    //double position[3]  =   {0.7071, 0, -1.7071};
-    //double position2[3] =   {0.7071, 0, -1.7071};
-
-    double position[3]  =   {2, 0, 0};
-    double position2[3] =   {2, 0, 0};
-
-    double angles[3];
-
-    // led blinking to indicate operation
+    double position[3]  =   {2, 0, 0}; // extends al legs out
+    double position2[3] =  {0.1736, 0, 0.0152};
+    double position3[3] =  {1.4142, 0, -1.4142};
 
     while(1)
     {
 
-        GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_2, GPIO_PIN_2);
+        setAllPosition(position); // writes position to all legs
 
-        leg1.calculatePosition(&leg1, position);
-        leg2.calculatePosition(&leg2, position);
-        leg3.calculatePosition(&leg3, position);
-        leg4.calculatePosition(&leg4, position2);
-        leg5.calculatePosition(&leg5, position2);
-        leg6.calculatePosition(&leg6, position2);
+        updatePositon(); // moves servos to position
 
-        leg1.getAngles(&leg1, angles);
-        leg5.getAngles(&leg5, angles);
+        ledBlink(); // blinks to indicate operation
 
-        leg1.setServoAngles(&leg1);
-        leg2.setServoAngles(&leg2);
-        leg3.setServoAngles(&leg3);
-        leg4.setServoAngles(&leg4);
-        leg5.setServoAngles(&leg5);
-        leg6.setServoAngles(&leg6);
+        delayMs(1000);
 
-        SysCtlDelay(SysCtlClockGet() / 10 );
+        setAllPosition(position2); // writes position to all legs
 
-        /*
+        updatePositon(); // moves servos to position
 
-        leg1.calculatePosition(&leg1, position3);
-        leg2.calculatePosition(&leg2, position3);
-        leg3.calculatePosition(&leg3, position3);
-        leg4.calculatePosition(&leg4, position3);
-        leg4.calculatePosition(&leg5, position3);
-        leg6.calculatePosition(&leg6, position3);
+        ledBlink(); // blinks to indicate operation
 
-        leg1.setServoAngles(&leg1);
-        leg2.setServoAngles(&leg2);
-        leg3.setServoAngles(&leg3);
-        leg4.setServoAngles(&leg4);
-        leg5.setServoAngles(&leg5);
-        leg6.setServoAngles(&leg6);
-        */
+        setAllPosition(position3); // writes position to all legs
+
+        updatePositon(); // moves servos to position
+
+        ledBlink(); // blinks to indicate operation
 
 
-        GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_2, 0);
-
-        SysCtlDelay(SysCtlClockGet() / 10 );
 
     }
 }

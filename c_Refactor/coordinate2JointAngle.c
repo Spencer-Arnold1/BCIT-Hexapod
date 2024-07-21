@@ -29,60 +29,12 @@ BCIT - HEXAPOD ROBOTICS CLUB
 
 
 
-double fast_sin(double x) {
-    // Normalize angle to range [-pi, pi]
-    while (x < -M_PI) x += 2 * M_PI;
-    while (x > M_PI) x -= 2 * M_PI;
-
-    // Use Chebyshev polynomial approximation
-    double x2 = x * x;
-    return x * (1 - x2 / 6 + x2 * x2 / 120);
-}
-
-double fast_cos(double x) {
-    // Normalize angle to range [-pi, pi]
-    while (x < -M_PI) x += 2 * M_PI;
-    while (x > M_PI) x -= 2 * M_PI;
-
-    // Use Chebyshev polynomial approximation
-    double x2 = x * x;
-    return 1 - x2 / 2 + x2 * x2 / 24;
-}
-
-
 //***************************************************************************************
 //
 // Forward Kinematics Solution
 //
 //***************************************************************************************
 
-/*
-double** func(double x[3], double l[3], double p[3]) {
-
-    int i;                                                               // iterator
-
-    double theta = x[0], gamma = x[1], phi = x[2];
-
-    double** result = malloc(3 * sizeof(double*));                       // allocating memory for rows
-
-    for (i = 0; i < 3; i++) {
-        result[i] = malloc(1 * sizeof(double));                          // allocating memory for columns
-    }
-
-    // pre-calculated function using MATLAB
-    result[0][0] = l[0] * (cos(gamma) * cos(theta) * cos(phi) - sin(gamma) * cos(theta) * sin(phi)) + l[1] * cos(gamma) * cos(theta) + l[2] * cos(theta) - p[0];
-    result[1][0] = -l[0] * (sin(gamma) * sin(theta) * sin(phi) - cos(gamma) * sin(theta) * cos(phi)) + l[1] * cos(gamma) * sin(theta) + l[2] * sin(theta) - p[1];
-    result[2][0] = l[0] * (cos(gamma) * sin(phi) + sin(gamma) * cos(phi)) + l[1] * sin(gamma) - p[2];
-
-    // Note: Although F(x) is a vector, it is returned as a 2-D matrix to allow for compatibility between other functions
-
-    return result;
-}
-*/
-
-
-
-//***************************************************************************************
 double** func(double x[3], double l[3], double p[3]) {
 
     /*
@@ -226,8 +178,6 @@ double* coordinate2JointAngle(double initialAngularPosition[3], double linkLengt
 
     return jointAngles;
 }
-
-
 
 
 
