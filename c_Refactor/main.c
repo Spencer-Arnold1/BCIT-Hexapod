@@ -69,11 +69,11 @@ void ledBlink(){
 
     SysCtlDelay(SysCtlClockGet() / 10 );
 
-    GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_2, 0);
+    GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_1, 0);
 
     SysCtlDelay(SysCtlClockGet() / 10 );
 
-    GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_2, GPIO_PIN_2);
+    GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_1, GPIO_PIN_1);
 }
 
 
@@ -81,10 +81,54 @@ int main(void)
 {
 
 
+    // Enable the GPIO port that is used for the on-board LED.
+    //
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);
+
+    //
+    // Check if the peripheral access is enabled.
+    //
+    while(!SysCtlPeripheralReady(SYSCTL_PERIPH_GPIOF))
+    {
+    }
+
+    //
+    // Enable the GPIO pin for the LED (PF3).  Set the direction as output, and
+    // enable the GPIO pin for digital function.
+    //
+    GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, GPIO_PIN_1);
+
+
+
     /*//////////////////////////////////////////////////////////////////
      * Initialization code
      *///////////////////////////////////////////////////////////////////
 
+
+
+
+
+     // Enable the GPIO port that is used for the on-board LED.
+     //
+     SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);
+
+     //
+     // Check if the peripheral access is enabled.
+     //
+     while(!SysCtlPeripheralReady(SYSCTL_PERIPH_GPIOF))
+     {
+     }
+
+     //
+     // Enable the GPIO pin for the LED (PF3).  Set the direction as output, and
+     // enable the GPIO pin for digital function.
+     //
+     GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, GPIO_PIN_1);
+
+
+
+
+     /*
      // Enable lazy stacking for interrupt handlers. This allows floating-point
      // instructions to be used within interrupt handlers, but at the expense of
      // extra stack usage.
@@ -102,8 +146,10 @@ int main(void)
      {
      }
 
+
      // Enable the GPIO pins for the LED (PF2).
-     MAP_GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, GPIO_PIN_2);
+     MAP_GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, GPIO_PIN_1);
+    */
 
     // Initialize PCA9685 Servo control module
     PCA9685Init(SLAVE_ADDRESS);
@@ -120,30 +166,51 @@ int main(void)
     double position2[3] =  {0.1736, 0, 0.0152};
     double position3[3] =  {1.4142, 0, -1.4142};
 
+
+
+    /*
+
+     // Enable the GPIO port that is used for the on-board LED.
+     //
+     SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);
+
+     //
+     // Check if the peripheral access is enabled.
+     //
+     while(!SysCtlPeripheralReady(SYSCTL_PERIPH_GPIOF))
+     {
+     }
+
+     //
+     // Enable the GPIO pin for the LED (PF3).  Set the direction as output, and
+     // enable the GPIO pin for digital function.
+     //
+     GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, GPIO_PIN_1);
+     */
+
+
     while(1)
     {
 
         setAllPosition(position); // writes position to all legs
 
-        updatePositon(); // moves servos to position
+                updatePositon(); // moves servos to position
 
-        ledBlink(); // blinks to indicate operation
+                ledBlink(); // blinks to indicate operation
 
-        delayMs(1000);
+                //delayMs(10);
 
-        setAllPosition(position2); // writes position to all legs
+                setAllPosition(position2); // writes position to all legs
 
-        updatePositon(); // moves servos to position
+                updatePositon(); // moves servos to position
 
-        ledBlink(); // blinks to indicate operation
+                //delayMs(1000);
 
-        setAllPosition(position3); // writes position to all legs
+                setAllPosition(position3); // writes position to all legs
 
-        updatePositon(); // moves servos to position
+                updatePositon(); // moves servos to position
 
-        ledBlink(); // blinks to indicate operation
-
-
+                //delayMs(1000);
 
     }
 }

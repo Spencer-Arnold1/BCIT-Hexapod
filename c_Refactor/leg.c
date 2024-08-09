@@ -98,7 +98,7 @@ void setPosition(struct leg *self, double cartesianPosition[3]){  // int steps
 
 
     // Use the azimuthal angle as part of the initial guess for the Newton-Raphson algorithm
-    double angularPosition[] = { azimuthalAngle, 0, 0 };
+    double angularPosition[] = { 0.1, 0.1, 0.1 };
 
     angles = coordinate2JointAngle(angularPosition, self->linkLengths, cartesianPosition);
 
