@@ -13,6 +13,8 @@ BCIT - HEXAPOD ROBOTICS CLUB
 #include "coordinate2JointAngle.h"
 #include "pca9685.h"
 #include <stdlib.h>
+#include "mathlookup.h"
+
 
 
 //*******************************************************************************

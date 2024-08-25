@@ -94,7 +94,7 @@ void i2cInit(){
     // the I2C0 module.  The last parameter sets the I2C data transfer rate.
     // If false the data rate is set to 100kbps and if true the data rate will
     // be set to 400kbps.
-    I2CMasterInitExpClk(I2C0_BASE, SysCtlClockGet(), false);
+    I2CMasterInitExpClk(I2C0_BASE, SysCtlClockGet(), true);  ////// Changed from false to true on 2024-08-12 //replaced SysCtlClockGet with 80 Mhz
 
 }
 

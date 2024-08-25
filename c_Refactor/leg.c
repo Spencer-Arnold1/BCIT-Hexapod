@@ -12,6 +12,7 @@ BCIT - HEXAPOD ROBOTICS CLUB
 #include "leg.h"
 #include <math.h>
 
+
 #ifndef M_PI
     #define M_PI 3.14159265358979323846 // not always defined
 #endif
@@ -94,25 +95,15 @@ void setPosition(struct leg *self, double cartesianPosition[3]){  // int steps
      */
 
     // Calculate the azimuthal angle using the Cartesian position coordinates
-    double azimuthalAngle = atan2(cartesianPosition[1], cartesianPosition[0]);
-
+    double azimuthalAngle = arctan_fast(cartesianPosition[1]/cartesianPosition[0]);
+    //double azimuthalAngle = atan2(cartesianPosition[1], cartesianPosition[0]);
 
     // Use the azimuthal angle as part of the initial guess for the Newton-Raphson algorithm
-    double angularPosition[] = { 0.1, 0.1, 0.1 };
+    double angularPosition[] = { azimuthalAngle, 0.1, 0.1 };
 
     angles = coordinate2JointAngle(angularPosition, self->linkLengths, cartesianPosition);
 
     int i;
-
-    /*
-    for(i = 0; i < 3; i++) {
-            if(angles[i] >= 90) {
-                angles[i] = 90;
-            } else if(angles[i] <= -90) {
-                angles[i] = -90;
-            }
-    }*/
-
 
     for (i = 0; i < 3; i++) {
        self->angularPosition[i] = angles[i];

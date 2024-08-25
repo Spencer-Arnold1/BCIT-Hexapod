@@ -13,11 +13,14 @@ BCIT - HEXAPOD ROBOTICS CLUB
 #
 */
 
+#pragma once
+
 #include "matrixOperations.h"
 #include "coordinate2JointAngle.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include "mathlookup.h"
 
 #ifndef M_PI
     #define M_PI 3.14159265358979323846 // not always defined
@@ -25,7 +28,7 @@ BCIT - HEXAPOD ROBOTICS CLUB
 
 #define MAXITERATIONS 1000
 //todo: change tolerance to increase speed (was 1e-6)
-#define TOLERANCE 1e-3
+#define TOLERANCE 0.1
 
 
 
@@ -54,9 +57,9 @@ double** func(double x[3], double l[3], double p[3]) {
     }
 
     // pre-calculated function using MATLAB
-    result[0][0] = l[0] * (cos(gamma) * cos(theta) * cos(phi) - sin(gamma) * cos(theta) * sin(phi)) + l[1] * cos(gamma) * cos(theta) + l[2] * cos(theta) - p[0];
-    result[1][0] = -l[0] * (sin(gamma) * sin(theta) * sin(phi) - cos(gamma) * sin(theta) * cos(phi)) + l[1] * cos(gamma) * sin(theta) + l[2] * sin(theta) - p[1];
-    result[2][0] = l[0] * (cos(gamma) * sin(phi) + sin(gamma) * cos(phi)) + l[1] * sin(gamma) - p[2];
+    result[0][0] = l[0] * (cos_fast(gamma) * cos_fast(theta) * cos_fast(phi) - sin_fast(gamma) * cos_fast(theta) * sin_fast(phi)) + l[1] * cos_fast(gamma) * cos_fast(theta) + l[2] * cos_fast(theta) - p[0];
+    result[1][0] = -l[0] * (sin_fast(gamma) * sin_fast(theta) * sin_fast(phi) - cos_fast(gamma) * sin_fast(theta) * cos_fast(phi)) + l[1] * cos_fast(gamma) * sin_fast(theta) + l[2] * sin_fast(theta) - p[1];
+    result[2][0] = l[0] * (cos_fast(gamma) * sin_fast(phi) + sin_fast(gamma) * cos_fast(phi)) + l[1] * sin_fast(gamma) - p[2];
 
     // Note: Although F(x) is a vector, it is returned as a 2-D matrix to allow for compatibility between other functions
 
