@@ -16,6 +16,8 @@ BCIT - HEXAPOD ROBOTICS CLUB
 #include "mathlookup.h"
 
 
+#define ANALYTICAL
+//#define ITERATED
 
 //*******************************************************************************
 //

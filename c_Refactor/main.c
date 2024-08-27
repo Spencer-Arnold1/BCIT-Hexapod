@@ -30,6 +30,7 @@ debugging includes go here
 #endif
 
 ///////////////////////////
+
 #define LEG1 0x06
 #define LEG2 0x12
 #define LEG3 0x1E
@@ -55,7 +56,7 @@ debugging includes go here
 #include "leg.h"
 
 
-double* jointAngles;
+//double  angles[3];
 double _result[3];
 
 
@@ -124,7 +125,7 @@ int main(void)
     struct leg leg6;    legInit(&leg6, 0, 1, 1, LEG6, SLAVE_ADDRESS + 1);
 
 
-    double position3[3] =  {0, 0, 2};
+    double position3[3] =  {1.39, 0, -0.4922};
     double position[3]  =   {2, 0, 0}; // extends al legs out
 
 
@@ -132,34 +133,25 @@ int main(void)
     while(1)
     {
 
-                //ledBlink();
+        GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_1, GPIO_PIN_1);
 
-                GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_1, GPIO_PIN_1);
+        setAllPosition(position);
 
-                setAllPosition(position);
+        GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_1, 0);
 
-                GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_1, 0);
+        updatePositon(); // moves servos to position
 
-                updatePositon(); // moves servos to position
+        delayMs(300);
 
-                delayMs(1000);
+        GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_1, GPIO_PIN_1);
 
+        setAllPosition(position3);
 
-                GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_1, GPIO_PIN_1);
+        GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_1, 0);
 
-                //ledBlink(); // blinks to indicate operation
+        updatePositon();
 
-                setAllPosition(position3);
-
-
-                GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_1, 0);
-
-                updatePositon();
-
-                delayMs(1000);
-
-
-                 // moves servos to position
+        delayMs(300);
 
     }
 }
