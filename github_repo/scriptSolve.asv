@@ -1,0 +1,46 @@
+
+% specify initial angle configuration of arm on startup 
+x0 = [0.1, 0.1, 0.1]; 
+
+% desired coordinates
+X_coordinate = -16.4
+Y_coordinate = 29.3
+Z_coordinate = 0.1
+
+%{
+ x_1 = gamma, this is the angle of the arm joint
+ x_2 = theta, this is the angle of the shoulder joint 
+ x_3 = phi, this is the anlge of the wrist joint
+%}
+
+l0 = 24.8 % length of shoulder 
+l1 = 29.3  % length of arm 
+l2 = 8.4   % length of wrist (forearm) 
+
+% matrix representing arm-joint angles
+f = @(x) [ l0*(cos(x(1))*cos(x(2))*cos(x(3))-sin(x(1))*cos(x(2))*sin(x(3)))+ l1*cos(x(1))*cos(x(2))+l2*cos(x(2)) - X_coordinate ;
+         l0*(cos(x(1))*sin(x(3))+sin(x(1))*cos(x(3)))+l1*sin(x(1)) - Y_coordinate;
+          -(l0*(sin(x(1))*sin(x(2))*sin(x(3))-cos(x(1))*sin(x(2))*cos(x(3)))-l1*cos(x(1))*sin(x(2))-l2*sin(x(2))) - Z_coordinate];
+
+% appromixate jacobian 
+J = @(x) ijacobian(f,x);
+
+% calculated angles
+x = newtons_method_n(f,J,x0)
+
+% verify that f(x) = 0 
+f(x)
+
+% conversion to degrees
+%l = rad2deg(x) 
+
+% normalization of angle
+x = mod(x,360);
+
+for i = 1:length(x)
+    if x(i) > 180
+          x(i) = x(i) -  360;
+    end 
+end 
+
+
