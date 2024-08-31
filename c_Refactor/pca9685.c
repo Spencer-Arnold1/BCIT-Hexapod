@@ -31,6 +31,7 @@
 //*****************************************************************************
 void pca9685sendDataFrame(uint8_t slaveAddr, uint8_t controlReg, uint8_t data) {
 
+
     // Set the slave address and indicate a write operation
     I2CMasterSlaveAddrSet(I2C0_BASE, slaveAddr, false);
 
@@ -64,39 +65,9 @@ void pca9685sendDataFrame(uint8_t slaveAddr, uint8_t controlReg, uint8_t data) {
         return;
     }
 
-}
-
-//*****************************************************************************
-//
-// Configure the I2C0 master
-//
-//*****************************************************************************
-void i2cInit(){
-
-
-    // enable I2C0 peripheral
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_I2C0);
-
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOB);
-
-    // Configure the pin muxing for I2C0 functions on port B2 and B3.
-    GPIOPinConfigure(GPIO_PB2_I2C0SCL);
-    GPIOPinConfigure(GPIO_PB3_I2C0SDA);
-
-    // Select the I2C function for these pins.  This function will also
-    // configure the GPIO pins pins for I2C operation, setting them to
-    // open-drain operation with weak pull-ups.
-    GPIOPinTypeI2CSCL(GPIO_PORTB_BASE, GPIO_PIN_2);
-    GPIOPinTypeI2C(GPIO_PORTB_BASE, GPIO_PIN_3);
-
-
-    // Enable and initialize the I2C0 master module.  Use the system clock for
-    // the I2C0 module.  The last parameter sets the I2C data transfer rate.
-    // If false the data rate is set to 100kbps and if true the data rate will
-    // be set to 400kbps.
-    I2CMasterInitExpClk(I2C0_BASE, SysCtlClockGet(), true);  ////// Changed from false to true on 2024-08-12 //replaced SysCtlClockGet with 80 Mhz
 
 }
+
 
 //*****************************************************************************
 //
@@ -106,8 +77,6 @@ void i2cInit(){
 void PCA9685Init(uint32_t addr){
 
     //todo: reset is not functioning properly --need to do a power reset. To be fixed.
-
-    i2cInit();
 
     uint32_t mode1 = 0x00;
     uint32_t mode1Data_wake = 0x00;

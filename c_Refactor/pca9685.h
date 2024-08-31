@@ -27,7 +27,6 @@ void PCA9685Init(uint32_t addr);
 // Private Functions
 void pca9685sendDataFrame(uint8_t slaveAddr, uint8_t controlReg, uint8_t data);
 
-void i2cInit();
 
 int systemTransferEquation(double angle);
 
