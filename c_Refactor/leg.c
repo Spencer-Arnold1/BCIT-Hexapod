@@ -144,7 +144,7 @@ void setPosition(struct leg* self, double cartesianPosition[3]) {  // int steps
      if(r2 <= 0.1)
          angle2 = M_PI/2;
      else
-         angle2 = atan(z1 / r2);
+         angle2 = atan2(z1 , r2);
 
      angles[1] = angle1 + angle2;
 

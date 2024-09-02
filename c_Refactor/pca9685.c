@@ -65,7 +65,6 @@ void pca9685sendDataFrame(uint8_t slaveAddr, uint8_t controlReg, uint8_t data) {
         return;
     }
 
-
 }
 
 
