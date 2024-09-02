@@ -62,7 +62,7 @@ void updatePositon(){
         legs[i]->getAngles(legs[i], positionAngles);
 
         positionAngles[1] = positionAngles[1]*(-1);
-        positionAngles[2] = positionAngles[2] + 90;
+        positionAngles[2] = positionAngles[2]-90;
 
         if(legs[i]->driverAddress == 0x41){
             jointAngles[i][0] = positionAngles[0]*(-1);
@@ -73,6 +73,16 @@ void updatePositon(){
             jointAngles[i][0] = positionAngles[0];
             jointAngles[i][1] = positionAngles[1];
             jointAngles[i][2] = positionAngles[2];
+        }
+
+        if(i == 0 || i ==3)
+        {
+            jointAngles[i][0] = jointAngles[i][0] + 45;
+        }
+
+        else if(i == 2 || i ==5)
+        {
+            jointAngles[i][0] = jointAngles[i][0] - 45;
         }
 
     }
@@ -114,7 +124,7 @@ void setPosition(struct leg* self, double cartesianPosition[3]) {  // int steps
      */
 
      // Calculate the azimuthal angle using the Cartesian position coordinates
-    double azimuthalAngle = arctan_fast(cartesianPosition[1] / cartesianPosition[0]);
+    double azimuthalAngle = atan2(cartesianPosition[1] , cartesianPosition[0]);
 
 #ifdef ANALYTICAL
 
@@ -193,6 +203,19 @@ void setAllPosition(double cartesianPosition[3]) {
     }
 
 }
+
+
+//*******************************************************************************
+//
+// Public function for setting leg position
+//
+//*******************************************************************************
+void setLegPosition(int legNum, double cartesianPosition[3]) {
+
+        legs[legNum]->setPosition(legs[legNum], cartesianPosition);
+
+}
+
 
 
 //*******************************************************************************

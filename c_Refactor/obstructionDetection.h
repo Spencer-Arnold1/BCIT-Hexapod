@@ -18,6 +18,7 @@
 #include "driverlib/i2c.h"
 #include "driverlib/sysctl.h"
 #include "driverlib/interrupt.h"
+#include "walk.h"
 
 
 

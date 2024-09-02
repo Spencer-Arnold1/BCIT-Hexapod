@@ -19,6 +19,16 @@ BCIT - HEXAPOD ROBOTICS CLUB
 #define ANALYTICAL
 //#define ITERATED
 
+#define LEG1 0x06
+#define LEG2 0x12
+#define LEG3 0x1E
+
+#define LEG4 0x06
+#define LEG5 0x12
+#define LEG6 0x1E
+
+#define SLAVE_ADDRESS 0x40
+
 //*******************************************************************************
 //
 // 3-joint RRR Robotic Leg CLASS definition
@@ -27,7 +37,7 @@ BCIT - HEXAPOD ROBOTICS CLUB
 struct leg {
 
    //Public Methods
-   void (*setPosition)(struct leg *self, double cartesianPosition[3]);    //make sure to add int steps
+   void (*setPosition)(struct leg *self, double cartesianPosition[3]);
    void (*resetPosition)(struct leg *self);
    void (*getAngles)(struct leg*self, double angles[3]);
 
@@ -43,6 +53,8 @@ struct leg {
 void updatePositon();
 
 void setAllPosition(double cartesianPosition[3]);
+//void setLegPosition(int legNum, double cartesianPosition[3]);
+
 // constructor
 void legInit(struct leg*self, double coxa, double femur, double tibia, uint32_t baseAddress, uint32_t driverAddress );
 

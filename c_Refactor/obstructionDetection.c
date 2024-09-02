@@ -29,11 +29,10 @@ void obstructionAvoidance(void){
 
     uint32_t obstructionDATA;
 
-    SysCtlDelay(100); // delay allows for previous i2c transaction to halt.
+    SysCtlDelay(1 * (SysCtlClockGet() / 3 / 1000)); // 1ms debounce
 
     // Set slave address and specify master receive mode
     I2CMasterSlaveAddrSet(I2C0_BASE, ARDUNIO_ADDRESS, true);
-
 
     I2CMasterControl(I2C0_BASE, I2C_MASTER_CMD_SINGLE_SEND);
 
@@ -47,16 +46,25 @@ void obstructionAvoidance(void){
 
     OBSTRUCTION_STATE = IDLE;
 
-    //while(1){
-    //  GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_1, 0);
-    // }
-
-    //todo to be removed
-    SysCtlDelay(10000000);
-
     I2CMasterInitExpClk(I2C0_BASE, SysCtlClockGet(), true); // i2c speed increased to 400 kb/s
 
+    if(!GPIOPinRead(GPIO_PORTF_BASE, GPIO_PIN_2)){
 
+        SysCtlDelay(10000000);
+
+        int i = 0;
+
+        for( i = 0; i < 5; i++) {
+
+            updateTargets(0, -50, 0);
+
+            updateLegNoClock();
+
+        }
+    }
+
+
+    updateTargets(0, 50, 0);
 }
 
 

@@ -12,7 +12,6 @@ const int interval = 30;
 unsigned long previousMils = 0;
 
 //enum StepState { STEP1, STEP2, STEP3, STEP4 };
-
 int currentStep = 1;
 
 
@@ -26,7 +25,6 @@ int legWidth = 100;
 int frontTilt = 0;
 int sideTilt = 0;
 int midSideOffset = 50;
-
 
 
 //Left Middle
@@ -66,14 +64,17 @@ double pose3rf[3];
 double pose4rf[3];
 
 
-void delayMs2(uint32_t ui32Ms) {
-
-    SysCtlDelay(ui32Ms * (SysCtlClockGet() / 3 / 1000));
+void walkInit(){
+    legInit(&leg1, 32, 124, 221, LEG1, SLAVE_ADDRESS_ );
+    legInit(&leg2, 32, 124, 221, LEG2, SLAVE_ADDRESS_ );
+    legInit(&leg3, 32, 124, 221, LEG3, SLAVE_ADDRESS_ );
+    legInit(&leg4, 32, 124, 221, LEG4, SLAVE_ADDRESS_  + 1);
+    legInit(&leg5, 32, 124, 221, LEG5, SLAVE_ADDRESS_  + 1);
+    legInit(&leg6, 32, 124, 221, LEG6, SLAVE_ADDRESS_  + 1);
 }
 
-
 //interpolates points between key end effector positions and moves legs
-void moveInterpolate(int leg_num, double* start_pos, double* end_pos, float progress)
+void moveInterpolate(struct leg *leg, double* start_pos, double* end_pos, float progress)
 {
 
     double target_pos[3];
@@ -81,7 +82,7 @@ void moveInterpolate(int leg_num, double* start_pos, double* end_pos, float prog
     for (i = 0; i < 3; ++i) {
         target_pos[i] = start_pos[i] + (end_pos[i] - start_pos[i]) * progress;
     }
-    setLegPosition(leg_num, target_pos);
+    leg->setPosition(leg, target_pos);
 
 }
 
@@ -131,12 +132,12 @@ void updateTargets(double x_speed, double y_speed, double rotation_speed)
        updatePose(pose3rf,legWidth,legOffset,-height+stepHeight+frontTilt+sideTilt);
        updatePose(pose4rf,legWidth-sideStep,frontStep+legOffset,-height+frontTilt+sideTilt);
 
-
 }
-
+/*
 //moves legs
 void updateLegPositions()
 {
+
 
        static unsigned long startMils = 0;
        unsigned long currentMils = timerVal;
@@ -183,14 +184,15 @@ void updateLegPositions()
        }
        updatePositon();
 
-       if (progress >= 1.0) {
-           startMils = currentMils;
-           currentStep = ((currentStep + 1) % 4);
-       }
+      // if (progress >= 1.0) {
+          // startMils = currentMils;
+           //currentStep = ((currentStep + 1) % 4);
+      // }
+       * *
 
 
 }
-
+ */
 
 
 void updateLegNoClock()
@@ -201,40 +203,40 @@ void updateLegNoClock()
 
            switch (currentStep) {
                case 1:
-                   moveInterpolate(0, pose1lb, pose2lb, progress);
-                   moveInterpolate(2, pose1lf, pose2lf, progress);
-                   moveInterpolate(4, pose1rm, pose2rm, progress);
+                   moveInterpolate(&leg1, pose1lb, pose2lb, progress);
+                   moveInterpolate(&leg3, pose1lf, pose2lf, progress);
+                   moveInterpolate(&leg5, pose1rm, pose2rm, progress);
 
-                   moveInterpolate(1, pose3lm, pose4lm, progress);
-                   moveInterpolate(3, pose3rf, pose4rf, progress);
-                   moveInterpolate(5, pose3rb, pose4rb, progress);
+                   moveInterpolate(&leg2, pose3lm, pose4lm, progress);
+                   moveInterpolate(&leg4, pose3rf, pose4rf, progress);
+                   moveInterpolate(&leg6, pose3rb, pose4rb, progress);
                    break;
                case 2:
-                   moveInterpolate(0, pose2lb, pose3lb, progress);
-                   moveInterpolate(2, pose2lf, pose3lf, progress);
-                   moveInterpolate(4, pose2rm, pose3rm, progress);
+                   moveInterpolate(&leg1, pose2lb, pose3lb, progress);
+                   moveInterpolate(&leg3, pose2lf, pose3lf, progress);
+                   moveInterpolate(&leg5, pose2rm, pose3rm, progress);
 
-                   moveInterpolate(1, pose4lm, pose1lm, progress);
-                   moveInterpolate(3, pose4rf, pose1rf, progress);
-                   moveInterpolate(5, pose4rb, pose1rb, progress);
+                   moveInterpolate(&leg2, pose4lm, pose1lm, progress);
+                   moveInterpolate(&leg4, pose4rf, pose1rf, progress);
+                   moveInterpolate(&leg6, pose4rb, pose1rb, progress);
                    break;
                case 3:
-                   moveInterpolate(0, pose3lb, pose4lb, progress);
-                   moveInterpolate(2, pose3lf, pose4lf, progress);
-                   moveInterpolate(4, pose3rm, pose4rm, progress);
+                   moveInterpolate(&leg1, pose3lb, pose4lb, progress);
+                   moveInterpolate(&leg3, pose3lf, pose4lf, progress);
+                   moveInterpolate(&leg5, pose3rm, pose4rm, progress);
 
-                   moveInterpolate(1, pose1lm, pose2lm, progress);
-                   moveInterpolate(3, pose1rf, pose2rf, progress);
-                   moveInterpolate(5, pose1rb, pose2rb, progress);
+                   moveInterpolate(&leg2, pose1lm, pose2lm, progress);
+                   moveInterpolate(&leg4, pose1rf, pose2rf, progress);
+                   moveInterpolate(&leg6, pose1rb, pose2rb, progress);
                    break;
                case 4:
-                   moveInterpolate(0, pose4lb, pose1lb, progress);
-                   moveInterpolate(2, pose4lf, pose1lf, progress);
-                  moveInterpolate(4, pose4rm, pose1rm, progress);
+                   moveInterpolate(&leg1, pose4lb, pose1lb, progress);
+                   moveInterpolate(&leg3, pose4lf, pose1lf, progress);
+                   moveInterpolate(&leg5, pose4rm, pose1rm, progress);
 
-                   moveInterpolate(1, pose2lm, pose3lm, progress);
-                   moveInterpolate(3, pose2rf, pose3rf, progress);
-                   moveInterpolate(5, pose2rb, pose3rb, progress);
+                   moveInterpolate(&leg2, pose2lm, pose3lm, progress);
+                   moveInterpolate(&leg4, pose2rf, pose3rf, progress);
+                   moveInterpolate(&leg6, pose2rb, pose3rb, progress);
                    break;
            }
            updatePositon();
@@ -242,7 +244,7 @@ void updateLegNoClock()
            if (progress >= 1.0) {
                currentStep = ((currentStep + 1) % 4);
            }
-           delayMs2(20);
+           delayMs(20);
       }
 
 
@@ -251,11 +253,9 @@ void updateLegNoClock()
 
 void testMove(int legNum, double* pose)
 {
-
-    setLegPosition(legNum, pose);
-
-
+    //setLegPosition(legNum, pose);
 }
+
 
 void testCycle()
 {
@@ -294,7 +294,6 @@ void testCycle()
         */
 
     }
-
 
 
 }
